@@ -4,12 +4,19 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:reference_project_flutter/core/DataList.dart';
 import 'package:reference_project_flutter/core/constants.dart';
 import 'package:reference_project_flutter/core/cubit/state.dart';
 import 'package:reference_project_flutter/core/di/injection.dart';
 import 'package:reference_project_flutter/core/network/local/cache_helper.dart';
 import 'package:reference_project_flutter/core/network/repository.dart';
+import 'package:reference_project_flutter/features/todo/data/create_db.dart';
+import 'package:reference_project_flutter/features/todo/data/model.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+
 
 class MainBloc extends Cubit<MainState> {
   final Repository _repository;
@@ -41,11 +48,139 @@ class MainBloc extends Cubit<MainState> {
   late ThemeData lightTheme;
   late ThemeData darkTheme;
 
-  void setThemes({
-    required bool dark,
-  }) {
-    isDark = dark;
+  /// start sqlFlit ---------------------------------------
+
+  // start notification ---------------------------------------
+
+  FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
+
+  void initalizeNotification() async {
+    flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+
+    tz.initializeTimeZones();
+    final IOSInitializationSettings initializationSettingsIOS =
+    IOSInitializationSettings(
+        requestSoundPermission: false,
+        requestBadgePermission: false,
+        requestAlertPermission: false,
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+
+    final AndroidInitializationSettings initializationSettingsAndroid =
+        const AndroidInitializationSettings("appicon");
+
+
+      final InitializationSettings initializationSettings =
+    InitializationSettings(
+      iOS: initializationSettingsIOS,
+      android:initializationSettingsAndroid,
+    );
+
+    await flutterLocalNotificationsPlugin!.initialize(
+        initializationSettings,
+        // onSelectNotification: selectNotification
+    );
+    // scheduledNotification();
+
+  }
+
+  displayNotification({required String title, required String body}) async {
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+        'your channel id', 'your channel name',
+        importance: Importance.max, priority: Priority.high);
+    var iOSPlatformChannelSpecifics = const IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin!.show(
+      0,
+      'You change your theme',
+      'You changed your theme back !',
+      platformChannelSpecifics,
+      payload: 'It could be anything you pass',
+    );
+  }
+
+  scheduledNotification() async {
+    await flutterLocalNotificationsPlugin!.zonedSchedule(
+        0,
+        'scheduled title',
+        DataList().test[Random().nextInt(DataList().test.length -1)],
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+        const NotificationDetails(
+            android: AndroidNotificationDetails(
+                'your channel id',
+                'your channel name')),
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime);
+
+  }
+
+  void requestIOSPermissions() {
+    flutterLocalNotificationsPlugin!
+        .resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
+  Future selectNotification(String payload) async {
+    if (payload != null) {
+      print('notification payload: $payload');
+    } else {
+      print("Notification Done");
+    }
+    print("notificationn ..");
+    // Get.to(()=>SecondScreen(payload));
+  }
+
+  Future onDidReceiveLocalNotification(
+      int? id, String? title, String? body, String? payload) async {
+    // display a dialog with the notification details, tap ok to go to another page
+    print('Hi');
+  }
+
+  // end notification ---------------------------------------
+
+  // start sqlFlit ---------------------------------------
+
+  var taskList = <TaskModel>[];
+
+  Future<int> addTask({required TaskModel task}) async {
+    return await DBHelper.insert(task);
+  }
+
+  void getTask() async {
+    List<Map<String,dynamic>> task = await DBHelper.query();
+    taskList.addAll(task.map((data)=> TaskModel.fromJson(data)).toList());
+    emit(GetTask());
+  }
+
+  void delete ({required TaskModel task}) {
+    DBHelper.delete(task).then((value){
+      getTask();
+    });
+
+
+  }
+
+  // end sqlFlit ---------------------------------------
+
+  /// end sqlFlit ---------------------------------------
+
+  void changeDarkMode() {
+    isDark = !isDark;
     sl<CacheHelper>().put('isDark', isDark);
+    setThemes(change: isDark);
+    emit(ChangeDarkMode());
+  }
+
+  void setThemes({required bool change}) {
+    isDark = change;
+    isDarkMode = isDark;
     changeTheme();
     emit(ThemeLoaded());
   }
@@ -61,20 +196,20 @@ class MainBloc extends Cubit<MainState> {
 
   void changeTheme() {
     lightTheme = ThemeData(
-      scaffoldBackgroundColor: HexColor(mainColor),
-      // canvasColor: Colors.transparent,
+
+      scaffoldBackgroundColor: Colors.white,
       appBarTheme: AppBarTheme(
         systemOverlayStyle: Platform.isIOS
             ? null
             : const SystemUiOverlayStyle(
-                statusBarColor: Color(0xffd4cab2),
-                statusBarIconBrightness: Brightness.dark,
+                statusBarColor: bluishClr,
+                statusBarIconBrightness: Brightness.light,
               ),
-        backgroundColor: HexColor(mainColor),
+        backgroundColor: bluishClr,
         elevation: 0.0,
         titleSpacing: 0.0,
         iconTheme: const IconThemeData(
-          color: Colors.black,
+          color: Colors.white,
           size: 20.0,
         ),
         titleTextStyle: const TextStyle(
@@ -138,11 +273,13 @@ class MainBloc extends Cubit<MainState> {
         ),
       ),
     );
+
     darkTheme = ThemeData(
-      primaryColor: HexColor(mainColorD),
-      primaryColorLight: HexColor(secondaryColorD),
-      primaryColorDark: HexColor(textColorD),
-      scaffoldBackgroundColor: HexColor(mainColorD),
+      primaryColor: Colors.yellow,
+      primaryColorLight: Colors.yellow,
+      primaryColorDark: Colors.yellow,
+      // background
+      scaffoldBackgroundColor: Colors.black38,
       // canvasColor: Colors.transparent,
       appBarTheme: AppBarTheme(
         systemOverlayStyle: Platform.isIOS
@@ -151,11 +288,12 @@ class MainBloc extends Cubit<MainState> {
                 statusBarColor: Color(0x00060a0c),
                 statusBarIconBrightness: Brightness.light,
               ),
-        backgroundColor: HexColor(scaffoldBackground),
+        backgroundColor: darkGreyClr,
         elevation: 0.0,
         titleSpacing: 0.0,
-        iconTheme: const IconThemeData(
+        iconTheme: IconThemeData(
           size: 20.0,
+          color: HexColor(mainColorDark),
         ),
         titleTextStyle: TextStyle(
           color: HexColor(grey),
@@ -172,7 +310,8 @@ class MainBloc extends Cubit<MainState> {
           height: 1.5,
         ),
       ),
-      primarySwatch: MaterialColor(int.parse('0xff$mainColor'), color),
+      // any selected item .
+      primarySwatch: MaterialColor(int.parse('0xff$mainColorD'), color),
       textTheme: TextTheme(
         headline6: TextStyle(
           fontSize: 20.0,

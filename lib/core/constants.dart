@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:reference_project_flutter/core/cubit/cubit.dart';
 import 'package:reference_project_flutter/core/di/injection.dart';
 import 'package:reference_project_flutter/core/network/local/cache_helper.dart';
 
@@ -39,6 +39,18 @@ const String disableButton = '#A7B1D7';
 //dark theme
 const String secondBackground = '393d40';
 const String secondaryVariantDark = '8a8a89';
+
+/// colors Todo -------------------------------------- start
+
+const Color bluishClr = Color(0xFF4e5ae8);
+const Color yellowClr = Color(0xFFFFB746);
+const Color pinkClr = Color(0xFFff4667);
+const Color white = Colors.white;
+const Color primaryClr = bluishClr;
+const Color darkGreyClr = Color(0xFF121212);
+const Color darkHeaderClr = Color(0xFF424242);
+
+/// colors Todo -------------------------------------- end
 
 const Map<int, Color> color = {
   50: Color.fromRGBO(136, 14, 79, .1),
@@ -99,17 +111,48 @@ void navigateAndFinish(
         return false;
       },
     );
+/// --------------------------------- style text font .
+bool? isDarkMode;
 
-// void launchURL({required String url}) async {
-//   launch(url).then((value) {
-//     showToast(message: 'Could not launch $url', toastStates: ToastStates.ERROR);
-//     print('url oppend success');
-//   }).catchError((error) {
-//     print('url oppend error');
-//     print(error.toString());
-//   });
-// }
+TextStyle get subHeadingStyle{
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+      fontSize: 24,
+      fontWeight: FontWeight.w900,
 
+    ),
+  );
+}
+
+TextStyle get subHeadingStyle2{
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      color: HexColor(textColorD),
+    ),
+  );
+}
+TextStyle get titleStyle{
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        color: isDarkMode! ? Colors.orangeAccent : Colors.black,
+    ),
+  );
+}
+
+TextStyle get bodyStyle{
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+      color: Colors.grey
+    ),
+  );
+}
+/// --------------------------------- style text font .(end)
 void showToast({
   required String message,
   required ToastStates toastStates,
@@ -151,16 +194,6 @@ void signOut(context) {
     }
   });
 }
-
-// TranslationModel appTranslation(context) =>
-//     MainCubit.get(context).translationModel;
-//
-// String displayTranslatedText({
-//   required BuildContext context,
-//   required String ar,
-//   required String en,
-// }) =>
-//     MainCubit.get(context).isRtl ? ar : en;
 
 Widget myDivider(context) => Divider(
       height: 0.0,

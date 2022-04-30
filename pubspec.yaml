@@ -42,10 +42,20 @@ dependencies:
   flutter_svg: ^0.23.0+1
   buildcondition: ^0.0.4
   fluttertoast: ^8.0.8
-  intl: ^0.17.0
   get_it: ^7.2.0
+  # todo app ---------- start
+  intl: ^0.17.0
   flutter_conditional_rendering: ^2.0.0
   roundcheckbox: ^2.0.4+1
+  google_fonts: ^2.3.2
+  date_picker_timeline: ^1.2.3
+  flutter_native_timezone: ^2.0.0
+  flutter_local_notifications: ^9.4.1
+  sqflite: ^2.0.2+1
+  flutter_staggered_animations: ^1.0.0
+  # todo app ---------- End
+
+
 
 
 

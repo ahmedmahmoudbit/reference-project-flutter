@@ -16,3 +16,11 @@ class ChangeModeState extends MainState {}
 
 class ThemeLoaded extends MainState {}
 
+class ChangeDarkMode extends MainState {}
+
+class AddTask extends MainState {}
+
+class DeleteTask extends MainState {}
+
+class GetTask extends MainState {}
+
