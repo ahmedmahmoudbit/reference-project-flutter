@@ -17,7 +17,6 @@ import 'package:reference_project_flutter/features/todo/data/model.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-
 class MainBloc extends Cubit<MainState> {
   final Repository _repository;
 
@@ -27,7 +26,6 @@ class MainBloc extends Cubit<MainState> {
         super(Empty());
 
   static MainBloc get(context) => BlocProvider.of(context);
-
 
   /// variables bool
   bool isRtl = false;
@@ -55,33 +53,30 @@ class MainBloc extends Cubit<MainState> {
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 
   void initalizeNotification() async {
-    flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     tz.initializeTimeZones();
     final IOSInitializationSettings initializationSettingsIOS =
-    IOSInitializationSettings(
-        requestSoundPermission: false,
-        requestBadgePermission: false,
-        requestAlertPermission: false,
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+        IOSInitializationSettings(
+            requestSoundPermission: false,
+            requestBadgePermission: false,
+            requestAlertPermission: false,
+            onDidReceiveLocalNotification: onDidReceiveLocalNotification);
 
     final AndroidInitializationSettings initializationSettingsAndroid =
         const AndroidInitializationSettings("appicon");
 
-
-      final InitializationSettings initializationSettings =
-    InitializationSettings(
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
       iOS: initializationSettingsIOS,
-      android:initializationSettingsAndroid,
+      android: initializationSettingsAndroid,
     );
 
     await flutterLocalNotificationsPlugin!.initialize(
-        initializationSettings,
-        // onSelectNotification: selectNotification
+      initializationSettings,
+      // onSelectNotification: selectNotification
     );
     // scheduledNotification();
-
   }
 
   displayNotification({required String title, required String body}) async {
@@ -90,7 +85,8 @@ class MainBloc extends Cubit<MainState> {
         importance: Importance.max, priority: Priority.high);
     var iOSPlatformChannelSpecifics = const IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin!.show(
       0,
       'You change your theme',
@@ -104,27 +100,25 @@ class MainBloc extends Cubit<MainState> {
     await flutterLocalNotificationsPlugin!.zonedSchedule(
         0,
         'scheduled title',
-        DataList().test[Random().nextInt(DataList().test.length -1)],
+        DataList().test[Random().nextInt(DataList().test.length - 1)],
         tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
         const NotificationDetails(
             android: AndroidNotificationDetails(
-                'your channel id',
-                'your channel name')),
+                'your channel id', 'your channel name')),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime);
-
+            UILocalNotificationDateInterpretation.absoluteTime);
   }
 
   void requestIOSPermissions() {
     flutterLocalNotificationsPlugin!
         .resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>()
+            IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+          alert: true,
+          badge: true,
+          sound: true,
+        );
   }
 
   Future selectNotification(String payload) async {
@@ -149,22 +143,24 @@ class MainBloc extends Cubit<MainState> {
 
   var taskList = <TaskModel>[];
 
-  Future<int> addTask({required TaskModel task}) async {
-    return await DBHelper.insert(task);
+  void addTask({required TaskModel task}) async {
+    await DBHelper.insert(task).then((value) {
+      getTask();
+    });
   }
 
   void getTask() async {
-    List<Map<String,dynamic>> task = await DBHelper.query();
-    taskList.addAll(task.map((data)=> TaskModel.fromJson(data)).toList());
-    emit(GetTask());
+    taskList = [];
+    await DBHelper.query().then((value) {
+      taskList.addAll(value.map((data) => TaskModel.fromJson(data)).toList());
+      emit(GetTask());
+    });
   }
 
-  void delete ({required TaskModel task}) {
-    DBHelper.delete(task).then((value){
+  void delete({required TaskModel task}) async {
+    await DBHelper.delete(task).then((value) {
       getTask();
     });
-
-
   }
 
   // end sqlFlit ---------------------------------------
@@ -196,7 +192,6 @@ class MainBloc extends Cubit<MainState> {
 
   void changeTheme() {
     lightTheme = ThemeData(
-
       scaffoldBackgroundColor: Colors.white,
       appBarTheme: AppBarTheme(
         systemOverlayStyle: Platform.isIOS
@@ -364,7 +359,4 @@ class MainBloc extends Cubit<MainState> {
     sl<CacheHelper>().put('isDark', isDark);
     emit(ChangeModeState());
   }
-
-
-
 }
