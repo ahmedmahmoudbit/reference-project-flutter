@@ -26,7 +26,7 @@ class _HomePageTodoState extends State<HomePageTodo> {
   @override
   void initState() {
     super.initState();
-    MainBloc.get(context).initalizeNotification();
+    MainBloc.get(context).initalizeNotification(context);
     MainBloc.get(context).requestIOSPermissions();
   }
 
@@ -58,8 +58,6 @@ class _HomePageTodoState extends State<HomePageTodo> {
       leading: GestureDetector(
         onTap: () {
           MainBloc.get(context).changeDarkMode();
-          cubit.displayNotification(title: 'title', body: 'body');
-          cubit.scheduledNotification();
         },
         child: const Icon(
           Icons.nightlight_round,
@@ -97,7 +95,9 @@ class _HomePageTodoState extends State<HomePageTodo> {
             textStyle: const TextStyle(
                 fontSize: 12, fontWeight: FontWeight.w600, color: Colors.grey)),
         onDateChange: (date) {
-          selectedDate = date;
+          setState(() {
+            selectedDate = date;
+          });
         },
       ),
     );
@@ -141,7 +141,15 @@ class _HomePageTodoState extends State<HomePageTodo> {
           itemCount: MainBloc.get(context).taskList.length,
           itemBuilder: (context, index) {
             var task = MainBloc.get(context).taskList[index];
-            return AnimationConfiguration.staggeredList(
+            if (task.repeat == 'Daily') {
+              DateTime date = DateFormat.jm().parse(task.startTime.toString());
+              var myTime = DateFormat("HH:mm").format(date);
+              cubit.scheduledNotification(
+              int.parse(myTime.toString().split(":")[0]),
+              int.parse(myTime.toString().split(":")[1]),
+              task,
+              );
+              return AnimationConfiguration.staggeredList(
               position: index,
               child: SlideAnimation(
                 child: FadeInAnimation(
@@ -153,13 +161,37 @@ class _HomePageTodoState extends State<HomePageTodo> {
                               context: context, task: task, cubit: cubit);
                         },
                         child:
-                            MyTaskHome(MainBloc.get(context).taskList[index]),
+                            MyTaskHome(task),
                       ),
                     ],
                   ),
                 ),
               ),
             );
+            }
+            if (task.date==DateFormat.yMd().format(selectedDate)) {
+              return AnimationConfiguration.staggeredList(
+                position: index,
+                child: SlideAnimation(
+                  child: FadeInAnimation(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            _showBottomSheet(
+                                context: context, task: task, cubit: cubit);
+                          },
+                          child:
+                          MyTaskHome(task),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            } else {
+              return Container();
+            }
           }),
     );
   }
@@ -201,6 +233,7 @@ class _HomePageTodoState extends State<HomePageTodo> {
                             context: context,
                             label: 'Task Completed',
                             onTap: () {
+                              MainBloc.get(context).markTaskCompleted(task.id!);
                               Navigator.pop(context);
                             },
                           ),

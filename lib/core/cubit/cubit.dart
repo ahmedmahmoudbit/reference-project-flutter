@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:reference_project_flutter/core/DataList.dart';
 import 'package:reference_project_flutter/core/constants.dart';
@@ -14,6 +15,7 @@ import 'package:reference_project_flutter/core/network/local/cache_helper.dart';
 import 'package:reference_project_flutter/core/network/repository.dart';
 import 'package:reference_project_flutter/features/todo/data/create_db.dart';
 import 'package:reference_project_flutter/features/todo/data/model.dart';
+import 'package:reference_project_flutter/features/todo/ui/home/HomePageTodo.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -52,10 +54,10 @@ class MainBloc extends Cubit<MainState> {
 
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 
-  void initalizeNotification() async {
+  void initalizeNotification(BuildContext context) async {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-    tz.initializeTimeZones();
+    _configureLocalTimezone();
     final IOSInitializationSettings initializationSettingsIOS =
         IOSInitializationSettings(
             requestSoundPermission: false,
@@ -63,7 +65,7 @@ class MainBloc extends Cubit<MainState> {
             requestAlertPermission: false,
             onDidReceiveLocalNotification: onDidReceiveLocalNotification);
 
-    final AndroidInitializationSettings initializationSettingsAndroid =
+    const AndroidInitializationSettings initializationSettingsAndroid =
         const AndroidInitializationSettings("appicon");
 
     final InitializationSettings initializationSettings =
@@ -74,9 +76,8 @@ class MainBloc extends Cubit<MainState> {
 
     await flutterLocalNotificationsPlugin!.initialize(
       initializationSettings,
-      // onSelectNotification: selectNotification
+        onSelectNotification: selectNotification,
     );
-    // scheduledNotification();
   }
 
   displayNotification({required String title, required String body}) async {
@@ -96,18 +97,33 @@ class MainBloc extends Cubit<MainState> {
     );
   }
 
-  scheduledNotification() async {
+  scheduledNotification(int hour , int minutes , TaskModel task) async {
     await flutterLocalNotificationsPlugin!.zonedSchedule(
-        0,
-        'scheduled title',
-        DataList().test[Random().nextInt(DataList().test.length - 1)],
-        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+        task.id!.toInt(),
+        task.title,
+        task.note,
+        _convertTime(hour,minutes),
+        // tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
         const NotificationDetails(
             android: AndroidNotificationDetails(
-                'your channel id', 'your channel name')),
+                'your channel id',
+                'your channel name')),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);
+        UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.time,
+        payload: "${task.title}|${task.note}|"
+    );
+  }
+
+  tz.TZDateTime _convertTime(int hour,int minutes) {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduleDate =
+        tz.TZDateTime(tz.local,now.year,now.month,now.day,hour,minutes);
+    if(scheduleDate.isBefore(now)) {
+      scheduleDate = scheduleDate.add(const Duration(days: 1));
+    }
+    return scheduleDate;
   }
 
   void requestIOSPermissions() {
@@ -121,14 +137,21 @@ class MainBloc extends Cubit<MainState> {
         );
   }
 
-  Future selectNotification(String payload) async {
+  Future<void> _configureLocalTimezone() async {
+    tz.initializeTimeZones();
+    final String timeZone = await FlutterNativeTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timeZone));
+  }
+
+  Future selectNotification(String? payload) async {
     if (payload != null) {
       print('notification payload: $payload');
     } else {
       print("Notification Done");
     }
     print("notificationn ..");
-    // Get.to(()=>SecondScreen(payload));
+    Container(color: Colors.redAccent);
+    // navigateTo(context, HomePageTodo());
   }
 
   Future onDidReceiveLocalNotification(
@@ -159,6 +182,12 @@ class MainBloc extends Cubit<MainState> {
 
   void delete({required TaskModel task}) async {
     await DBHelper.delete(task).then((value) {
+      getTask();
+    });
+  }
+
+  void markTaskCompleted(int id) async {
+    await DBHelper.update(id).then((value) {
       getTask();
     });
   }

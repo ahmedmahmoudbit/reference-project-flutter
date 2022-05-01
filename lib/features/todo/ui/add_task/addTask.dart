@@ -165,7 +165,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     }).toList(),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
                 Row(
@@ -203,7 +203,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             style: titleStyle,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
         Padding(
@@ -217,7 +217,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   });
                 },
                 child: Padding(
-                  padding: EdgeInsetsDirectional.only(start: 6.0),
+                  padding: const EdgeInsetsDirectional.only(start: 6.0),
                   child: CircleAvatar(
                     radius: 14,
                     backgroundColor: index == 0
@@ -226,7 +226,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             ? pinkClr
                             : yellowClr,
                     child: _selectedColor == index
-                        ? Icon(
+                        ? const Icon(
                             Icons.done_rounded,
                             color: Colors.white,
                             size: 20,
