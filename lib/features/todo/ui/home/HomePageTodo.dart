@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:reference_project_flutter/core/constants.dart';
 import 'package:reference_project_flutter/core/cubit/cubit.dart';
@@ -78,7 +77,7 @@ class _HomePageTodoState extends State<HomePageTodo> {
       margin: const EdgeInsetsDirectional.only(top: 20, start: 20),
       child: DatePicker(
         DateTime.now(),
-        height: size.height * 0.12,
+        height: size.height * 0.13,
         width: size.width * 0.17,
         initialSelectedDate: DateTime.now(),
         selectionColor: primaryClr,

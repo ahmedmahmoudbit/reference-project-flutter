@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reference_project_flutter/core/cubit/cubit.dart';
 import 'package:reference_project_flutter/core/di/injection.dart' as di;
-import 'package:reference_project_flutter/core/cubit/MyBlocObserver.dart';
 import 'package:reference_project_flutter/core/di/injection.dart';
 import 'package:reference_project_flutter/core/network/local/cache.dart';
 import 'package:reference_project_flutter/core/network/local/cache_helper.dart';
+import 'package:reference_project_flutter/features/home.dart';
 import 'package:reference_project_flutter/features/todo/data/create_db.dart';
-import 'package:reference_project_flutter/features/todo/ui/home/HomePageTodo.dart';
+
 import 'core/cubit/state.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Bloc.observer = MyBlocObserver();
   await di.init();
   await CacheHelperw.init();
   await DBHelper.initDb();
@@ -51,7 +50,7 @@ class MyApp extends StatelessWidget {
           : ThemeMode.light,
       theme: MainBloc.get(context).lightTheme,
       darkTheme: MainBloc.get(context).darkTheme,
-        home: const HomePageTodo(),
+        home: const HomePage(),
     );
   },
 ),

@@ -1,13 +1,11 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:reference_project_flutter/core/DataList.dart';
 import 'package:reference_project_flutter/core/constants.dart';
 import 'package:reference_project_flutter/core/cubit/state.dart';
 import 'package:reference_project_flutter/core/di/injection.dart';
@@ -15,16 +13,16 @@ import 'package:reference_project_flutter/core/network/local/cache_helper.dart';
 import 'package:reference_project_flutter/core/network/repository.dart';
 import 'package:reference_project_flutter/features/todo/data/create_db.dart';
 import 'package:reference_project_flutter/features/todo/data/model.dart';
-import 'package:reference_project_flutter/features/todo/ui/home/HomePageTodo.dart';
+import 'package:reference_project_flutter/features/todo/ui/home/ShoNotificationData.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class MainBloc extends Cubit<MainState> {
-  final Repository _repository;
+  final Repository repository;
 
   MainBloc({
     required Repository repository,
-  })  : _repository = repository,
+  })  : repository = repository,
         super(Empty());
 
   static MainBloc get(context) => BlocProvider.of(context);
@@ -52,6 +50,8 @@ class MainBloc extends Cubit<MainState> {
 
   // start notification ---------------------------------------
 
+  var taskList = <TaskModel>[];
+
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 
   void initalizeNotification(BuildContext context) async {
@@ -66,7 +66,7 @@ class MainBloc extends Cubit<MainState> {
             onDidReceiveLocalNotification: onDidReceiveLocalNotification);
 
     const AndroidInitializationSettings initializationSettingsAndroid =
-        const AndroidInitializationSettings("appicon");
+        AndroidInitializationSettings("appicon");
 
     final InitializationSettings initializationSettings =
         InitializationSettings(
@@ -76,7 +76,7 @@ class MainBloc extends Cubit<MainState> {
 
     await flutterLocalNotificationsPlugin!.initialize(
       initializationSettings,
-        onSelectNotification: selectNotification,
+        onSelectNotification: (payload) => selectNotification('${taskList[0].title}|${taskList[0].note}|',context),
     );
   }
 
@@ -143,7 +143,7 @@ class MainBloc extends Cubit<MainState> {
     tz.setLocalLocation(tz.getLocation(timeZone));
   }
 
-  Future selectNotification(String? payload) async {
+  void selectNotification(String? payload,BuildContext context) async {
     if (payload != null) {
       print('notification payload: $payload');
     } else {
@@ -151,7 +151,7 @@ class MainBloc extends Cubit<MainState> {
     }
     print("notificationn ..");
     Container(color: Colors.redAccent);
-    // navigateTo(context, HomePageTodo());
+    navigateTo(context, ShoNotificationData(text: payload!));
   }
 
   Future onDidReceiveLocalNotification(
@@ -163,8 +163,6 @@ class MainBloc extends Cubit<MainState> {
   // end notification ---------------------------------------
 
   // start sqlFlit ---------------------------------------
-
-  var taskList = <TaskModel>[];
 
   void addTask({required TaskModel task}) async {
     await DBHelper.insert(task).then((value) {
@@ -251,7 +249,7 @@ class MainBloc extends Cubit<MainState> {
           height: 1.5,
         ),
       ),
-      primarySwatch: MaterialColor(int.parse('0xff$mainColor'), color),
+      primarySwatch: MaterialColor(int.parse('0xff$mainColorD'), color),
       textTheme: TextTheme(
         headline6: TextStyle(
           fontSize: 18.0,
