@@ -43,6 +43,8 @@ dependencies:
   buildcondition: ^0.0.4
   fluttertoast: ^8.0.8
   get_it: ^7.2.0
+  # rive: animation
+  rive: ^0.9.0
   # todo app ---------- start
   intl: ^0.17.0
   flutter_conditional_rendering: ^2.0.0
@@ -80,10 +82,18 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/images/
+    - assets/images/social/
+    - assets/icon/
+#    - assets/riv/fire.riv
+#    - assets/riv/land.riv
+#    - assets/riv/mediation.riv
+#    - assets/riv/composer.riv
+#    - assets/riv/profile.riv
+#    - assets/images/test1.jpg
+    - assets/riv/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

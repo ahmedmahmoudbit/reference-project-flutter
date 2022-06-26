@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reference_project_flutter/core/constants.dart';
+import 'package:reference_project_flutter/features/Social/SocialPage.dart';
 import 'package:reference_project_flutter/features/chat-ui/chatPage.dart';
 
 import 'todo/ui/home/HomePageTodo.dart';
@@ -26,6 +27,11 @@ class HomePage extends StatelessWidget {
                 navigateTo(context, ChatPage());
               },
               child: Text('Chat Ui')),
+              TextButton(
+                  onPressed: () {
+                    navigateTo(context, SocialPAge());
+                  },
+                  child: Text('Social')),
         ]),
       ),
     );
