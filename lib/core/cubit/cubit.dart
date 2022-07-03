@@ -48,7 +48,7 @@ class MainBloc extends Cubit<MainState> {
 
   /// start sqlFlit ---------------------------------------
 
-  // start notification ---------------------------------------
+  // start notification_custom ---------------------------------------
 
   var taskList = <TaskModel>[];
 
@@ -145,7 +145,7 @@ class MainBloc extends Cubit<MainState> {
 
   void selectNotification(String? payload,BuildContext context) async {
     if (payload != null) {
-      print('notification payload: $payload');
+      print('notification_custom payload: $payload');
     } else {
       print("Notification Done");
     }
@@ -156,11 +156,11 @@ class MainBloc extends Cubit<MainState> {
 
   Future onDidReceiveLocalNotification(
       int? id, String? title, String? body, String? payload) async {
-    // display a dialog with the notification details, tap ok to go to another page
+    // display a dialog with the notification_custom details, tap ok to go to another page
     print('Hi');
   }
 
-  // end notification ---------------------------------------
+  // end notification_custom ---------------------------------------
 
   // start sqlFlit ---------------------------------------
 

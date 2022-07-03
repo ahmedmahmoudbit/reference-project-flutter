@@ -6,6 +6,7 @@ import 'package:reference_project_flutter/core/di/injection.dart';
 import 'package:reference_project_flutter/core/network/local/cache.dart';
 import 'package:reference_project_flutter/core/network/local/cache_helper.dart';
 import 'package:reference_project_flutter/features/home.dart';
+import 'package:reference_project_flutter/features/notification_custom/page/notificationPage.dart';
 import 'package:reference_project_flutter/features/todo/data/create_db.dart';
 
 import 'core/cubit/state.dart';
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
           : ThemeMode.light,
       theme: MainBloc.get(context).lightTheme,
       darkTheme: MainBloc.get(context).darkTheme,
-        home: const HomePage(),
+        home: const NotificationPage(),
     );
   },
 ),
