@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -217,82 +216,85 @@ class MainBloc extends Cubit<MainState> {
     (context as Element).visitChildren(rebuild);
   }
 
+  static String defaultFontFamily = 'Avenir';
+  static const Color primaryTextColor = Color(0xFF0D253C);
+  static const Color secondaryTextColor = Color(0xFF2D4379);
+  static const Color primaryColor = Color(0xff376AED);
+
   void changeTheme() {
     lightTheme = ThemeData(
-      scaffoldBackgroundColor: Colors.white,
-      appBarTheme: AppBarTheme(
-        systemOverlayStyle: Platform.isIOS
-            ? null
-            : const SystemUiOverlayStyle(
-                statusBarColor: bluishClr,
-                statusBarIconBrightness: Brightness.light,
-              ),
-        backgroundColor: bluishClr,
-        elevation: 0.0,
-        titleSpacing: 0.0,
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-          size: 20.0,
-        ),
-        titleTextStyle: const TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.white,
+        foregroundColor: primaryTextColor,
+        titleSpacing: 32,
+        elevation: 0,
+      ),
+      colorScheme: const ColorScheme.light(
+          primary: primaryColor,
+          surface: Colors.white,
+          onSurface: primaryTextColor,
+          onSecondary: secondaryTextColor,
+          onPrimary: Colors.white,
+          background: Color(0xfffbfcff),
+          onBackground: Colors.black),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          textStyle: MaterialStateProperty.all(
+            TextStyle(
+                fontSize: 14,
+                fontFamily: defaultFontFamily,
+                fontWeight: FontWeight.w400),
+          ),
         ),
       ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: HexColor(mainColor),
-        elevation: 50.0,
-        selectedItemColor: HexColor(mainColor),
-        unselectedItemColor: HexColor(grey),
-        type: BottomNavigationBarType.fixed,
-        selectedLabelStyle: const TextStyle(
-          height: 1.5,
-        ),
-      ),
-      primarySwatch: MaterialColor(int.parse('0xff$mainColorD'), color),
+      snackBarTheme: const SnackBarThemeData(
+          backgroundColor: primaryColor,
+          contentTextStyle: TextStyle(color: Colors.white)),
       textTheme: TextTheme(
-        headline6: TextStyle(
-          fontSize: 18.0,
-          fontWeight: FontWeight.w600,
-          color: isDark ? HexColor(textColorD) : HexColor(TextMainColor),
-          height: 1.3,
-        ),
-        bodyText1: TextStyle(
-          fontSize: 18.0,
-          fontWeight: FontWeight.bold,
-          color: isDark ? HexColor(textColorD) : HexColor(TextMainColor),
-          height: 1.4,
-        ),
-        bodyText2: TextStyle(
-          fontSize: 15.0,
+        titleLarge: TextStyle(
+          fontFamily: defaultFontFamily,
           fontWeight: FontWeight.w700,
-          color: isDark ? HexColor(secondaryDark) : HexColor(brownColor),
-          height: 1.4,
+          fontSize: 18,
+          color: primaryTextColor,
         ),
-        subtitle1: TextStyle(
-          fontSize: 16.0,
-          fontWeight: FontWeight.w700,
-          color: isDark ? HexColor(textColorD) : HexColor(TextMainColor),
-          height: 1.4,
+        headlineSmall: TextStyle(
+            fontFamily: defaultFontFamily,
+            fontWeight: FontWeight.w700,
+            fontSize: 20,
+            color: primaryTextColor),
+        headlineMedium: TextStyle(
+            fontFamily: defaultFontFamily,
+            fontWeight: FontWeight.w700,
+            color: primaryTextColor,
+            fontSize: 24),
+        titleMedium: TextStyle(
+          fontFamily: defaultFontFamily,
+          color: secondaryTextColor,
+          fontWeight: FontWeight.w200,
+          fontSize: 18,
         ),
-        subtitle2: TextStyle(
-          fontSize: 15.0,
+        titleSmall: TextStyle(
+          fontFamily: defaultFontFamily,
+          color: primaryTextColor,
           fontWeight: FontWeight.w400,
-          color: isDark ? HexColor(textColorD) : HexColor(TextMainColor),
-          height: 1.4,
+          fontSize: 14,
         ),
-        caption: TextStyle(
-          fontSize: 12.0,
+        bodyLarge: TextStyle(
+          fontFamily: defaultFontFamily,
           fontWeight: FontWeight.w400,
-          color: HexColor(appBarColor),
-          height: 1.4,
+          color: primaryTextColor,
+          fontSize: 14,
         ),
-        button: const TextStyle(
-          fontSize: 16.0,
-          fontWeight: FontWeight.w700,
-          color: Colors.white,
-          height: 1.4,
+        bodyMedium: TextStyle(
+          fontFamily: defaultFontFamily,
+          color: secondaryTextColor,
+          fontSize: 12,
         ),
+        bodySmall: TextStyle(
+            fontFamily: defaultFontFamily,
+            color: const Color(0xff7B8BB2),
+            fontSize: 10,
+            fontWeight: FontWeight.w800),
       ),
     );
 

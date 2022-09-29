@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reference_project_flutter/core/constants.dart';
 import 'package:reference_project_flutter/features/Social/SocialPage.dart';
+import 'package:reference_project_flutter/features/blog_app/screen/mainPage.dart';
 import 'package:reference_project_flutter/features/chat-ui/chatPage.dart';
 
 import 'todo/ui/home/HomePageTodo.dart';
@@ -19,19 +20,24 @@ class HomePage extends StatelessWidget {
             children: [
           TextButton(
               onPressed: () {
-                navigateTo(context, HomePageTodo());
+                navigateTo(context, const HomePageTodo());
               },
-              child: Text('Todo')),
+              child: const Text('Todo')),
           TextButton(
               onPressed: () {
-                navigateTo(context, ChatPage());
+                navigateTo(context, const ChatPage());
               },
-              child: Text('Chat Ui')),
+              child: const Text('Chat Ui')),
               TextButton(
                   onPressed: () {
-                    navigateTo(context, SocialPAge());
+                    navigateTo(context, const SocialPAge());
                   },
-                  child: Text('Social')),
+                  child: const Text('Social')),
+              TextButton(
+                  onPressed: () {
+                    navigateTo(context, const MainPageBlog());
+                  },
+                  child: const Text('Blog Ui')),
         ]),
       ),
     );

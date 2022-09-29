@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
           : ThemeMode.light,
       theme: MainBloc.get(context).lightTheme,
       darkTheme: MainBloc.get(context).darkTheme,
-        home: const NotificationPage(),
+        home: const HomePage(),
     );
   },
 ),
