@@ -9,3 +9,6 @@ chat :
 Notification & Green SocialMedia Ui :
 ![996](https://user-images.githubusercontent.com/75967214/177784495-559cb367-4032-4e82-8343-8dee9bac2069.png)
 
+Blog App ui
+![2658](https://user-images.githubusercontent.com/75967214/193050563-91242ca0-cd30-463c-ba74-72ae515b90a9.jpg)
+
