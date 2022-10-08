@@ -72,6 +72,15 @@ dependencies:
   smooth_page_indicator: ^1.0.0+2
   flutter_cache_manager: ^3.3.0
   video_player: ^2.4.5
+  # maps
+  google_maps_flutter: ^2.2.1
+  geolocator: ^8.0.1
+  location: ^4.4.0
+  material_floating_search_bar: ^0.3.7
+  uuid: ^3.0.5
+  flutter_polyline_points: ^1.0.0
+  url_launcher: ^6.1.6
+
 
 
 
@@ -107,6 +116,7 @@ flutter:
     - assets/riv/
     - assets/img/background/
     - assets/img/icon/
+    - assets/img/map/
 
   fonts:
     - family: Avenir
