@@ -4,6 +4,7 @@ import 'package:reference_project_flutter/features/Social/SocialPage.dart';
 import 'package:reference_project_flutter/features/blog_app/screen/mainPage.dart';
 import 'package:reference_project_flutter/features/chat-ui/chatPage.dart';
 
+import 'moviess/pages/movies_page/movies_page.dart';
 import 'todo/ui/home/HomePageTodo.dart';
 
 class HomePage extends StatelessWidget {
@@ -38,6 +39,11 @@ class HomePage extends StatelessWidget {
                     navigateTo(context, const MainPageBlog());
                   },
                   child: const Text('Blog Ui')),
+              TextButton(
+                  onPressed: () {
+                    navigateTo(context, const MoviesPage());
+                  },
+                  child: const Text('Move Ui')),
         ]),
       ),
     );
