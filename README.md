@@ -21,4 +21,6 @@ Pdf & Movies ui.
 ![pdf](https://user-images.githubusercontent.com/75967214/198823720-d10b9f46-ecba-4a3a-bbda-a0d9e6301c99.gif)
 
 
+animation cards & sound local
 
+![ezgif-1-f6930a4400](https://user-images.githubusercontent.com/75967214/202398017-03ab130f-3ccc-45e3-880f-29d42715b9c8.gif)
