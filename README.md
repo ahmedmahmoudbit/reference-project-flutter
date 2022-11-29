@@ -1,5 +1,8 @@
 # reference_project_flutter
 
+bottom nav : 
+![Pixel True Mockup high](https://user-images.githubusercontent.com/75967214/204547489-fdac17d5-e07c-40dd-af7c-9904c44e8b3f.png)
+
 note :
 ![note](https://user-images.githubusercontent.com/75967214/173858033-e755caa4-b054-4491-879f-e33f528e6d7e.png)
 
